@@ -1,0 +1,14 @@
+
+pretrained/
+dataset/
+data_UKB/
+__pycache__/
+logs/
+resulsts_oct/
+.vscode/
+*.csv
+*.svg
+*.png
+*.out
+log*/
+results/
