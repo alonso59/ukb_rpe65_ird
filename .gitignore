@@ -12,3 +12,5 @@ resulsts_oct/
 *.out
 log*/
 results/
+!images/layer_segmentation.png
+!images/oct_volume_bscan.png
