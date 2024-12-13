@@ -122,7 +122,6 @@ class OCTProcessing:
         if 'Anonym' in self.patient or 'Künzel' in self.patient:
             y = 'control'
         elif 'RP65' in self.patient or 'RPE65' in self.patient:
-            print(self.patient)
             y = 'RPE65'
             pid_file = self.patient.split('_')
             filtered = self.pid_codes[self.pid_codes['RPE65_ID'].str.contains(pid_file[0] + '_' + pid_file[1] + '_' + pid_file[2])]
@@ -405,9 +404,7 @@ class OCTProcessing:
                 f'EZ_TV_std{ref}':biomark_std[6],
             }
             self.results.update(biomarkers)
-            # print(self.patient, f'\t', self.laterality, f'\t\t', ETDRS_loc, f'\t\t{np.round(biomark_mean[0],2)}\t\t', f'{np.round(biomark_mean[1],2)}\t\t', f'{np.round(biomark_mean[2],2)}\t\t',
-            #                                      f'{np.round(biomark_mean[3],2)}\t\t', f'{np.round(biomark_mean[4],2)}\t\t', f'{np.round(biomark_mean[5],2)}\t\t', f'{np.round(biomark_mean[6],2)}')
-    
+
     def volume_forward(self, big_model_path=None, interpolated=True, tv_smooth=False, plot=False, bscan_positions=True):
         X_MINS = []
         X_MAX = []
@@ -453,17 +450,11 @@ class OCTProcessing:
                     xmax = self.roi_pos[2] + np.max(pos_ez[1][np.nonzero(pos_ez[1])])
                 except:
                     xmax = 0
-                if (xmax - xmin) > 20:
-                    # xmin = 0
-                    # xmax = 0
+                if (xmax - xmin) > 50:
                     delta_ez_lim.append(np.abs(xmax * self.scale_x - xmin * self.scale_x))
                     X_MINS.append(xmin + xstart)
                     X_MAX.append(xmax + xstart)
                     Y_POS.append(y_position)
-                # except Exception as exc:
-                #     print("An exception occurred:", type(exc).__name__, "–", exc)
-                #     continue
-            # print(int(Y_POS[0] - Y_POS[-1]))
             try:
                 if interpolated and len(self.oct) > 1:
                     ynew1 = np.linspace(Y_POS[0], Y_POS[-1], num=int(Y_POS[0] - Y_POS[-1]))
@@ -481,27 +472,23 @@ class OCTProcessing:
             X_MINS = ez_xmin_fovea
             X_MAX = ez_xmax_fovea
             volume_area = np.nan
-        # print(volume_area)
             
         if plot:
             fig, ax = plt.subplots(nrows=1, ncols=1, dpi=120, figsize=(8,8), frameon=False)
             self.oct.plot(localizer=True, bscan_positions=bscan_positions, bscan_region=True)
             if tv_smooth and len(self.oct) > 1 and interpolated:
-                # assert interpolated, 'Interpolation for Total variation 1-D smooth is needed -> arg* interpolated = True'
                 YNEW1 = denoising_1D_TV(f1(ynew1), 2)
                 ax.plot(YNEW1, ynew1, '-', c='y', linewidth=2)
                 YNEW2 = denoising_1D_TV(f2(ynew2), 2)
                 ax.plot(YNEW2, ynew2, '-', c='y', linewidth=2)
-                # print(YNEW1[0], YNEW2[0])
                 ax.plot([YNEW1[0], YNEW2[0]], [ynew2[0], ynew1[0]],  '-', c='y', linewidth=2)
                 ax.plot([YNEW1[-1], YNEW2[-1]], [ynew2[-1], ynew1[-1]], '-', c='y', linewidth=2)
                 ax.plot([self.fovea_xstart, self.fovea_xstop], [self.foveax_pos, self.foveax_pos], c='lime', linewidth=3)
-                # plt.legend(loc='best')
-            # self.plot_etdrs_grid(ax)
+
             ax.tick_params(labelsize=12)
             ax.get_xaxis().set_ticks([])
             ax.get_yaxis().set_ticks([])
-            # ax.legend(loc='best')
+
             fig.tight_layout()
         self.results['Volume_area'] = volume_area
 

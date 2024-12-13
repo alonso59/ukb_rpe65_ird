@@ -2,6 +2,17 @@
 
 Welcome to the documentation for training segmentation models for OCT layer segmentation!
 
+### OCT Volume B-Scan
+![OCT Volume B-Scan](images/oct_volume_bscan.png)
+
+This image shows an OCT volume B-scan, providing a detailed view of the retinal structure. 
+
+### Layer Segmentation
+![Layer Segmentation](images/layer_segmentation.png)
+
+The above image illustrates the segmentation of different layers in the OCT scan, which is a crucial step in identifying and extracting relevant biomarkers. 
+
+
 ## Execution Instructions
 
 To execute the main.py script, follow these steps:
